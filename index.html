@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Car Rental</title>
+  <script>
+    async function cargarAlquileres() {
+      const response = await fetch('http://localhost:3008/api/alquileres');
+      const data = await response.json();
+      const tabla = document.getElementById('tabla-alquileres');
+      tabla.innerHTML = '';
+      data.forEach((alquiler) => {
+        const fila = `<tr>
+          <td>${alquiler.CEDULA}</td>
+          <td>${alquiler.NOMBRE}</td>
+          <td>${alquiler.FECHA_ALQUILER}</td>
+          <td>${alquiler.TIEMPO_ALQUILADO}</td>
+          <td>${alquiler.SALDO}</td>
+          <td>${alquiler.PLACA}</td>
+          <td>${alquiler.MARCA}</td>
+        </tr>`;
+        tabla.innerHTML += fila;
+      });
+    }
+
+    async function filtrarPorFechas() {
+      const fechaInicio = document.getElementById('fecha-inicio').value;
+      const fechaFin = document.getElementById('fecha-fin').value;
+      const response = await fetch(`http://localhost:3000/api/alquileres/filtrar?fechaInicio=${fechaInicio}&fechaFin=${fechaFin}`);
+      const data = await response.json();
+      const tabla = document.getElementById('tabla-alquileres');
+      tabla.innerHTML = '';
+      data.forEach((alquiler) => {
+        const fila = `<tr>
+          <td>${alquiler.CEDULA}</td>
+          <td>${alquiler.NOMBRE}</td>
+          <td>${alquiler.FECHA_ALQUILER}</td>
+          <td>${alquiler.TIEMPO_ALQUILADO}</td>
+          <td>${alquiler.SALDO}</td>
+          <td>${alquiler.PLACA}</td>
+          <td>${alquiler.MARCA}</td>
+        </tr>`;
+        tabla.innerHTML += fila;
+      });
+    }
+
+    async function mostrarResumen() {
+      const response = await fetch('http://localhost:3000/api/alquileres/resumen');
+      const data = await response.json();
+      document.getElementById('alquileres-diarios').innerText = `Alquileres diarios: ${data.diarios.length}`;
+      document.getElementById('alquileres-mensuales').innerText = `Alquileres mensuales: ${data.mensuales.length}`;
+    }
+
+    setInterval(mostrarResumen, 60000); // Actualizar cada minuto
+  </script>
+</head>
+<body onload="cargarAlquileres(); mostrarResumen();">
+  <h1>Gestión de Alquileres</h1>
+
+  <label for="fecha-inicio">Fecha Inicio:</label>
+  <input type="date" id="fecha-inicio">
+  <label for="fecha-fin">Fecha Fin:</label>
+  <input type="date" id="fecha-fin">
+  <button onclick="filtrarPorFechas()">Filtrar</button>
+
+  <table border="1">
+    <thead>
+      <tr>
+        <th>Cédula</th>
+        <th>Nombre</th>
+        <th>Fecha Alquiler</th>
+        <th>Tiempo Alquilado</th>
+        <th>Saldo</th>
+        <th>Placa</th>
+        <th>Marca</th>
+      </tr>
+    </thead>
+    <tbody id="tabla-alquileres"></tbody>
+  </table>
+
+  <h2>Resumen</h2>
+  <p id="alquileres-diarios"></p>
+  <p id="alquileres-mensuales"></p>
+</body>
+</html>
+*/
